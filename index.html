@@ -5924,6 +5924,12 @@ function _translateEmailDetail(emailId, bodyId) {
   _translateItem(emailId, email.text || '', lang, el);
 }
 
+function _rowEmailTranslate(idx, emailId) {
+  openIphoneMail(idx);
+  const bodyId = 'email-body-' + (emailId || 'x').replace(/\./g, '-');
+  _translateEmailDetail(emailId, bodyId);
+}
+
 function _translateChatThread(sourceDocId, cardId) {
   const chat = (state.chats || []).find(c => (c.sourceDocId||'').toString() === sourceDocId);
   if (!chat) return;
@@ -7017,6 +7023,7 @@ function renderIphoneRow(email, idx) {
         <span style="text-align:right">${escHtml(dateStr)}${timeStr ? ` ${escHtml(timeStr)}` : ''}</span>
         <div style="display:flex;flex-direction:row;gap:3px;flex-wrap:wrap;justify-content:flex-end;white-space:normal" onclick="event.stopPropagation()">
           <button style="${_rowActBtnStyle}" onclick="_showInWooDossier('${escHtml(_rowDocCode)}')">${_HI.document} ${_rowT.toonInOrigineel}</button>
+          ${window._snelwijzerLang !== 'nl' ? `<button style="${_rowActBtnStyle}" onclick="event.stopPropagation();_rowEmailTranslate(${idx},'${escHtml(email.id)}')" title="Translate">🌐 ${window._snelwijzerLang === 'en' ? 'Translate' : 'Tradusí'}</button>` : ''}
           <button style="${_rowActBtnStyle}${_flagBtnExtra}" onclick="_toggleFlag('${escHtml(email.id)}')" title="${flagged ? 'Markering verwijderen' : _rowT.markeer}">${flagged ? '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#c0392b;vertical-align:middle;flex-shrink:0"></span> ' + _rowT.gemarkeerd : '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#c0392b;vertical-align:middle;flex-shrink:0"></span> ' + _rowT.markeer}</button>
           <button style="${_rowActBtnStyle};color:#c0392b;border-color:#e8c2c2" onclick="_deleteDoc('${escHtml(_rowDocCode)}')">✕ ${_rowT.verwijder}</button>
         </div>
@@ -12283,6 +12290,7 @@ function _regenCompass() {
 function _swSetLang(lang) {
   if (!['nl','en','pap'].includes(lang)) return;
   window._snelwijzerLang = lang;
+  localStorage.setItem('woo_language', lang);
 
   // Update button active states
   ['nl','en','pap'].forEach(l => {
@@ -12296,6 +12304,12 @@ function _swSetLang(lang) {
   if (badge) badge.textContent = _t.title;
   const regenLink = document.getElementById('snelwijzerRegenLink');
   if (regenLink) regenLink.textContent = _t.regen;
+
+  // Update all static UI text (tabs, Snelwijzer btn, Bron btn, etc.)
+  applyUiLanguage(lang);
+
+  // Re-render current viewer tab so translate buttons appear/disappear
+  renderActiveViewerTab();
 
   // Serve from cache if available, otherwise generate fresh
   if (window._compassCache && window._compassCache[lang]) {
