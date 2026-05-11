@@ -192,21 +192,21 @@
     flex-shrink: 0;
   }
   .topbar-lang-btn {
-    background: transparent;
-    border: none;
-    color: rgba(255,255,255,0.38);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.7);
     font-family: var(--woo-mono);
     font-size: 10px;
     font-weight: 500;
-    padding: 3px 5px;
+    padding: 3px 7px;
     cursor: pointer;
     line-height: 1;
-    transition: color 0.15s;
+    transition: color 0.15s, background 0.15s;
     letter-spacing: 0.05em;
     border-radius: 3px;
   }
-  .topbar-lang-btn:hover { color: rgba(255,255,255,0.75); }
-  .topbar-lang-btn.active { color: var(--woo-accent); font-weight: 700; }
+  .topbar-lang-btn:hover { color: white; background: rgba(255,255,255,0.15); }
+  .topbar-lang-btn.active { color: white; background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.4); font-weight: 700; }
   .topbar-lang-sep {
     color: rgba(255,255,255,0.18);
     font-size: 9px;
